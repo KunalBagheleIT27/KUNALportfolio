@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, MouseEvent } from "react";
 
 const commands = [
   '> npm run build... ✓ compiled in 1.2s',
@@ -17,6 +17,8 @@ const HeroSection = () => {
   const [cmdIndex, setCmdIndex] = useState(0);
   const [text, setText] = useState("");
   const [typing, setTyping] = useState(true);
+  const terminalRef = useRef<HTMLDivElement>(null);
+  const [terminalTilt, setTerminalTilt] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const cmd = commands[cmdIndex];
@@ -35,9 +37,21 @@ const HeroSection = () => {
     }
   }, [text, typing, cmdIndex]);
 
+  const onTerminalMove = (e: MouseEvent) => {
+    if (!terminalRef.current) return;
+    const rect = terminalRef.current.getBoundingClientRect();
+    const x = ((e.clientY - rect.top) / rect.height - 0.5) * -10;
+    const y = ((e.clientX - rect.left) / rect.width - 0.5) * 10;
+    setTerminalTilt({ x, y });
+  };
+
   return (
     <section id="home" className="relative min-h-screen flex items-center pt-14 px-6 md:px-10 overflow-hidden">
       <span className="absolute top-20 left-6 md:left-10 font-mono text-[10px] text-muted-foreground/30">{"// 001 HERO"}</span>
+
+      {/* Ambient glows */}
+      <div className="absolute top-1/3 right-1/4 w-[600px] h-[600px] rounded-full bg-lime/[0.04] blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/3 w-[400px] h-[400px] rounded-full bg-ice/[0.03] blur-[120px] pointer-events-none" />
 
       <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
         {/* Left */}
@@ -58,41 +72,61 @@ const HeroSection = () => {
           </p>
 
           <div className="flex flex-wrap gap-3">
-            <span className="border border-border bg-card px-3 py-1.5 font-mono text-[11px] text-muted-foreground">↑ 57% Load Speed Optimized</span>
-            <span className="border border-border bg-card px-3 py-1.5 font-mono text-[11px] text-muted-foreground">3K+ Weekly Active Users</span>
+            <span className="border border-border bg-card/80 backdrop-blur-sm px-4 py-2 font-mono text-[11px] text-muted-foreground hover:-translate-y-0.5 transition-transform duration-200">↑ 57% Load Speed Optimized</span>
+            <span className="border border-border bg-card/80 backdrop-blur-sm px-4 py-2 font-mono text-[11px] text-muted-foreground hover:-translate-y-0.5 transition-transform duration-200">3K+ Weekly Active Users</span>
           </div>
 
           <div className="flex flex-wrap gap-4 mt-2">
-            <a href="#work" data-hover className="bg-lime text-background font-display font-bold text-sm px-6 py-3 hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(200,255,0,0.25)] transition-all duration-200">
-              VIEW CASE STUDY →
+            <a href="#work" data-hover className="group relative bg-lime text-background font-display font-bold text-sm px-7 py-3.5 overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(200,255,0,0.3)]">
+              <span className="relative z-10">VIEW CASE STUDY →</span>
+              <div className="absolute inset-0 bg-foreground scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
             </a>
-            <a href="#contact" data-hover className="border border-foreground/50 text-foreground font-display font-bold text-sm px-6 py-3 hover:bg-foreground hover:text-background transition-all duration-200">
-              DOWNLOAD CV
+            <a href="#contact" data-hover className="group relative border border-foreground/50 text-foreground font-display font-bold text-sm px-7 py-3.5 overflow-hidden transition-all duration-300">
+              <span className="relative z-10 group-hover:text-background transition-colors duration-300">DOWNLOAD CV</span>
+              <div className="absolute inset-0 bg-foreground scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
             </a>
           </div>
         </div>
 
-        {/* Right - Terminal */}
-        <div className="lg:col-span-2 relative flex items-center justify-center min-h-[350px]">
+        {/* Right - Terminal with 3D tilt */}
+        <div className="lg:col-span-2 relative flex items-center justify-center min-h-[350px]" style={{ perspective: "800px" }}>
           {/* Lime glow */}
-          <div className="absolute w-64 h-64 rounded-full bg-lime/10 blur-[80px]" />
+          <div className="absolute w-72 h-72 rounded-full bg-lime/10 blur-[100px]" />
+          <div className="absolute w-40 h-40 rounded-full bg-ice/10 blur-[60px] translate-x-20 translate-y-10" />
 
-          {/* Terminal */}
-          <div className="relative border border-border bg-card w-full max-w-sm p-4" style={{ animation: "float 4s ease-in-out infinite" }}>
-            <div className="flex gap-1.5 mb-4">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#FF5F57" }} />
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#FEBC2E" }} />
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#28C840" }} />
+          {/* Terminal with 3D tilt */}
+          <div
+            ref={terminalRef}
+            onMouseMove={onTerminalMove}
+            onMouseLeave={() => setTerminalTilt({ x: 0, y: 0 })}
+            className="relative border border-border bg-card/80 backdrop-blur-md w-full max-w-sm p-5 shadow-[0_20px_60px_-20px_rgba(200,255,0,0.1)]"
+            style={{
+              animation: "float 4s ease-in-out infinite",
+              transform: `rotateX(${terminalTilt.x}deg) rotateY(${terminalTilt.y}deg)`,
+              transition: "transform 0.15s ease-out",
+            }}
+          >
+            {/* Window chrome */}
+            <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border">
+              <div className="flex gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#FF5F57" }} />
+                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#FEBC2E" }} />
+                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#28C840" }} />
+              </div>
+              <span className="font-mono text-[9px] text-muted-foreground ml-2">kunal@dev ~ </span>
             </div>
-            <div className="font-mono text-xs text-muted-foreground min-h-[20px]">
-              {text}<span className="inline-block w-[6px] h-[14px] bg-lime ml-0.5 align-middle" style={{ animation: "type-cursor 1s infinite" }} />
+            <div className="font-mono text-xs text-muted-foreground min-h-[24px]">
+              {text}<span className="inline-block w-[7px] h-[15px] bg-lime ml-0.5 align-middle" style={{ animation: "type-cursor 1s infinite" }} />
             </div>
+            {/* Reflection/shine effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.02] to-transparent pointer-events-none" />
           </div>
 
-          {/* Orbiting badges */}
+          {/* Orbiting badges with glow */}
           {badges.map((b) => (
             <div key={b.name} className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className="font-mono text-[9px] border px-2 py-0.5 bg-card" style={{ borderColor: b.color, color: b.color, animation: b.anim }}>
+              <span className="font-mono text-[9px] border px-2.5 py-1 bg-card/80 backdrop-blur-sm shadow-lg"
+                style={{ borderColor: b.color, color: b.color, animation: b.anim, boxShadow: `0 0 20px ${b.color}15` }}>
                 {b.name}
               </span>
             </div>

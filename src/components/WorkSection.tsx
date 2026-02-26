@@ -52,7 +52,6 @@ const WorkSection = () => {
         ))}
       </div>
 
-      {/* Modal */}
       {modal !== null && <CaseStudyModal project={projects[modal]} onClose={() => setModal(null)} />}
     </section>
   );
@@ -61,12 +60,16 @@ const WorkSection = () => {
 const ProjectCard = ({ project: p, index, onOpen }: { project: typeof projects[0]; index: number; onOpen: () => void }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [glare, setGlare] = useState({ x: 50, y: 50 });
 
   const onMouseMove = (e: MouseEvent) => {
     const rect = cardRef.current!.getBoundingClientRect();
-    const x = ((e.clientY - rect.top) / rect.height - 0.5) * -8;
-    const y = ((e.clientX - rect.left) / rect.width - 0.5) * 8;
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+    const x = (py - 0.5) * -10;
+    const y = (px - 0.5) * 10;
     setTilt({ x, y });
+    setGlare({ x: px * 100, y: py * 100 });
   };
 
   return (
@@ -75,18 +78,30 @@ const ProjectCard = ({ project: p, index, onOpen }: { project: typeof projects[0
         ref={cardRef}
         onClick={onOpen}
         onMouseMove={onMouseMove}
-        onMouseLeave={() => setTilt({ x: 0, y: 0 })}
+        onMouseLeave={() => { setTilt({ x: 0, y: 0 }); setGlare({ x: 50, y: 50 }); }}
         data-hover
-        className="group border border-border bg-[#0A0A0A] overflow-hidden transition-all duration-300 hover:border-lime"
-        style={{ aspectRatio: "4/5", transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`, transition: "transform 0.3s cubic-bezier(0.2,0.8,0.2,1), border-color 0.3s" }}
+        className="group relative border border-border bg-card overflow-hidden transition-all duration-300 hover:border-lime hover:shadow-[0_20px_60px_-20px_rgba(200,255,0,0.15)]"
+        style={{
+          aspectRatio: "4/5",
+          transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+          transition: "transform 0.2s cubic-bezier(0.2,0.8,0.2,1), border-color 0.3s, box-shadow 0.3s",
+        }}
       >
+        {/* Glare overlay */}
+        <div className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+          style={{ background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(255,255,255,0.08) 0%, transparent 60%)` }} />
+
         {/* Image area */}
-        <div className="relative h-[60%] overflow-hidden" style={{ background: p.gradient }}>
-          <div className="absolute inset-0 bg-background/20 group-hover:bg-transparent transition-all duration-300 group-hover:scale-[1.04]" style={{ background: p.gradient }} />
-          <span className="absolute top-3 right-3 font-mono text-[9px] text-lime bg-background/80 px-2 py-0.5">CASE STUDY</span>
+        <div className="relative h-[60%] overflow-hidden">
+          <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-[1.06]" style={{ background: p.gradient }} />
+          <div className="absolute inset-0 bg-background/30 group-hover:bg-background/10 transition-all duration-500" />
+          <span className="absolute top-3 right-3 font-mono text-[9px] text-lime bg-background/80 backdrop-blur-sm px-2 py-1 z-10">CASE STUDY</span>
+          {/* Project number watermark */}
+          <span className="absolute bottom-2 left-4 font-display font-[800] text-[80px] leading-none text-foreground/5 z-0">{p.num}</span>
         </div>
+
         {/* Bottom */}
-        <div className="h-[40%] p-5 flex flex-col justify-between">
+        <div className="h-[40%] p-5 flex flex-col justify-between relative">
           <div>
             <div className="flex items-baseline justify-between">
               <span className="font-mono text-2xl text-lime">{p.num}</span>
@@ -100,7 +115,7 @@ const ProjectCard = ({ project: p, index, onOpen }: { project: typeof projects[0
             </div>
             <div className="flex items-center justify-between">
               <span className="font-mono text-xs text-lime">{p.metric}</span>
-              <span className="text-muted-foreground group-hover:text-lime transition-colors">→</span>
+              <span className="text-muted-foreground group-hover:text-lime group-hover:translate-x-1 transition-all duration-300">→</span>
             </div>
           </div>
         </div>
@@ -110,24 +125,32 @@ const ProjectCard = ({ project: p, index, onOpen }: { project: typeof projects[0
 };
 
 const CaseStudyModal = ({ project: p, onClose }: { project: typeof projects[0]; onClose: () => void }) => (
-  <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm overflow-auto" style={{ animation: "clip-reveal 0.4s cubic-bezier(0.2,0.8,0.2,1)" }} onClick={onClose}>
+  <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-md overflow-auto" style={{ animation: "clip-reveal 0.4s cubic-bezier(0.2,0.8,0.2,1)" }} onClick={onClose}>
     <div className="max-w-4xl mx-auto py-20 px-6" onClick={(e) => e.stopPropagation()}>
-      <button onClick={onClose} data-hover className="fixed top-6 right-6 font-mono text-sm text-lime hover:text-foreground transition-colors">✕ CLOSE</button>
+      <button onClick={onClose} data-hover className="fixed top-6 right-6 font-mono text-sm text-lime hover:text-foreground transition-colors z-50">✕ CLOSE</button>
 
       <span className="font-mono text-lime text-sm">{p.num}</span>
-      <h2 className="font-display font-[800] text-5xl md:text-6xl mt-2 mb-8">{p.name}</h2>
+      <h2 className="font-display font-[800] text-5xl md:text-6xl mt-2 mb-2">{p.name}</h2>
+      <p className="text-muted-foreground mb-10 text-lg">{p.tagline}</p>
 
       <div className="space-y-10">
-        <div><h3 className="font-mono text-xs text-muted-foreground uppercase tracking-widest mb-2">Problem</h3><p className="text-foreground/80">{p.problem}</p></div>
-        <div><h3 className="font-mono text-xs text-muted-foreground uppercase tracking-widest mb-2">Solution</h3><p className="text-foreground/80">{p.solution}</p></div>
-        <div><h3 className="font-mono text-xs text-muted-foreground uppercase tracking-widest mb-2">My Role</h3><p className="text-foreground/80">{p.role}</p></div>
+        {[
+          { label: "Problem", content: p.problem },
+          { label: "Solution", content: p.solution },
+          { label: "My Role", content: p.role },
+        ].map((s) => (
+          <div key={s.label} className="border-l-2 border-lime/30 pl-6">
+            <h3 className="font-mono text-xs text-lime uppercase tracking-widest mb-2">{s.label}</h3>
+            <p className="text-foreground/80 text-lg">{s.content}</p>
+          </div>
+        ))}
 
         <div>
           <h3 className="font-mono text-xs text-muted-foreground uppercase tracking-widest mb-4">Key Metrics</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {p.metrics.map((m) => (
-              <div key={m.label} className="border border-border p-4">
-                <div className="font-display font-bold text-2xl text-lime">{m.value}</div>
+              <div key={m.label} className="border border-border bg-card/50 p-5 hover:border-lime/30 transition-colors">
+                <div className="font-display font-bold text-3xl text-lime">{m.value}</div>
                 <div className="font-mono text-[10px] text-muted-foreground mt-1">{m.label}</div>
               </div>
             ))}
@@ -137,7 +160,7 @@ const CaseStudyModal = ({ project: p, onClose }: { project: typeof projects[0]; 
         <div>
           <h3 className="font-mono text-xs text-muted-foreground uppercase tracking-widest mb-3">Tech Stack</h3>
           <div className="flex flex-wrap gap-2">
-            {p.stack.map((t) => <span key={t} className="border border-lime/30 px-3 py-1 font-mono text-xs text-lime">{t}</span>)}
+            {p.stack.map((t) => <span key={t} className="border border-lime/30 px-4 py-1.5 font-mono text-xs text-lime">{t}</span>)}
           </div>
         </div>
       </div>
