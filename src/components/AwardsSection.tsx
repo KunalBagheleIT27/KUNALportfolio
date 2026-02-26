@@ -1,4 +1,5 @@
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useRef, useState, MouseEvent } from "react";
 
 const awards = [
   { emoji: "🏆", name: "Smart India Hackathon 2024", issuer: "Government of India", year: "2024", desc: "National-level winner among 50,000+ participants" },
@@ -13,6 +14,44 @@ const marqueeItems = [
   "💻 10+ Projects Shipped", "🌍 Open Source Contributor", "⚡ 98 Lighthouse Score",
 ];
 
+const AwardCard = ({ a }: { a: typeof awards[0] }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const onMove = (e: MouseEvent) => {
+    const rect = ref.current!.getBoundingClientRect();
+    setTilt({
+      x: ((e.clientY - rect.top) / rect.height - 0.5) * -8,
+      y: ((e.clientX - rect.left) / rect.width - 0.5) * 8,
+    });
+  };
+
+  return (
+    <div
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseLeave={() => setTilt({ x: 0, y: 0 })}
+      data-hover
+      data-reveal
+      className="group border border-border bg-card/50 backdrop-blur-sm p-8 hover:border-lime/50 transition-all duration-300 hover:shadow-[0_20px_50px_-15px_rgba(200,255,0,0.1)]"
+      style={{
+        perspective: "600px",
+        transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+        transition: "transform 0.15s ease-out, border-color 0.3s, box-shadow 0.3s",
+      }}
+    >
+      <div className="relative">
+        <span className="text-5xl mb-5 block">{a.emoji}</span>
+        <h3 className="font-display font-bold text-lg mb-1">{a.name}</h3>
+        <p className="font-mono text-[10px] text-muted-foreground mb-3">{a.issuer} · {a.year}</p>
+        <p className="text-sm text-muted-foreground">{a.desc}</p>
+        {/* Subtle glow */}
+        <div className="absolute -top-4 -right-4 w-16 h-16 bg-lime/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+      </div>
+    </div>
+  );
+};
+
 const AwardsSection = () => {
   const ref = useScrollReveal<HTMLElement>();
 
@@ -20,11 +59,13 @@ const AwardsSection = () => {
     <section ref={ref} className="relative py-32">
       <span className="absolute top-8 left-6 md:left-10 font-mono text-[10px] text-muted-foreground/30">{"// 005 AWARDS"}</span>
 
-      {/* Marquee */}
-      <div className="overflow-hidden border-y border-border py-4 mb-16 group" data-reveal>
+      {/* Marquee with depth */}
+      <div className="overflow-hidden border-y border-border py-5 mb-16 group relative" data-reveal>
+        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
         <div className="flex gap-8 whitespace-nowrap group-hover:[animation-play-state:paused]" style={{ animation: "marquee 20s linear infinite" }}>
           {marqueeItems.map((item, i) => (
-            <span key={i} className="font-mono text-sm text-muted-foreground px-4 py-1 border border-border shrink-0">{item}</span>
+            <span key={i} className="font-mono text-sm text-muted-foreground px-5 py-2 border border-border shrink-0 hover:border-lime/30 hover:text-foreground transition-colors">{item}</span>
           ))}
         </div>
       </div>
@@ -32,12 +73,7 @@ const AwardsSection = () => {
       {/* Award cards */}
       <div className="max-w-7xl mx-auto px-6 md:px-10 grid grid-cols-1 md:grid-cols-3 gap-6" data-reveal>
         {awards.map((a) => (
-          <div key={a.name} className="border border-border bg-card p-6 hover:border-lime hover:-translate-y-1 transition-all duration-300" data-hover data-reveal>
-            <span className="text-4xl mb-4 block">{a.emoji}</span>
-            <h3 className="font-display font-bold text-lg mb-1">{a.name}</h3>
-            <p className="font-mono text-[10px] text-muted-foreground mb-3">{a.issuer} · {a.year}</p>
-            <p className="text-sm text-muted-foreground">{a.desc}</p>
-          </div>
+          <AwardCard key={a.name} a={a} />
         ))}
       </div>
     </section>

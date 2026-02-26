@@ -1,4 +1,5 @@
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useState } from "react";
 
 const socials = [
   { name: "GitHub", href: "#", icon: <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.607.069-.607 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.748-1.025 2.748-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z" /> },
@@ -9,37 +10,102 @@ const socials = [
 
 const ContactSection = () => {
   const ref = useScrollReveal<HTMLElement>();
+  const [hoveredSocial, setHoveredSocial] = useState<string | null>(null);
 
   return (
-    <section id="contact" ref={ref} className="relative py-32 px-6 md:px-10">
+    <section id="contact" ref={ref} className="relative py-32 px-6 md:px-10 overflow-hidden">
       <span className="absolute top-8 left-6 md:left-10 font-mono text-[10px] text-muted-foreground/30">{"// 006 CONTACT"}</span>
 
-      <div className="max-w-5xl mx-auto text-center" data-reveal>
-        <h2 className="font-display font-[800] text-5xl sm:text-6xl md:text-7xl mb-4">LET'S BUILD<br />SOMETHING.</h2>
-        <p className="text-muted-foreground mb-12">Open to full-time roles, freelance, and hackathon collabs.</p>
+      {/* Background glow effects */}
+      <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-lime/5 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-ice/5 blur-[100px] pointer-events-none" />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 text-left mb-12" data-reveal>
-          {/* Email */}
-          <div className="flex items-center">
-            <a href="mailto:hello@kunalbaghele.dev" data-hover className="font-display font-bold text-xl md:text-2xl text-foreground hover:text-lime transition-colors underline underline-offset-4 decoration-muted-foreground/30 hover:decoration-lime">
-              hello@kunalbaghele.dev
-            </a>
+      <div className="max-w-6xl mx-auto relative">
+        {/* Giant headline with 3D perspective */}
+        <div data-reveal className="mb-16" style={{ perspective: "1000px" }}>
+          <h2 className="font-display font-[800] text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight">
+            <span className="block" style={{ animation: "clip-reveal 0.6s cubic-bezier(0.2,0.8,0.2,1) 0.1s both" }}>
+              LET'S BUILD
+            </span>
+            <span className="block text-stroke" style={{ animation: "clip-reveal 0.6s cubic-bezier(0.2,0.8,0.2,1) 0.25s both" }}>
+              SOMETHING
+            </span>
+            <span className="block text-lime" style={{ animation: "clip-reveal 0.6s cubic-bezier(0.2,0.8,0.2,1) 0.4s both" }}>
+              AMAZING.
+            </span>
+          </h2>
+          <p className="text-muted-foreground mt-6 max-w-lg text-base md:text-lg">
+            Open to full-time roles, freelance projects, and hackathon collaborations. Let's create something extraordinary together.
+          </p>
+        </div>
+
+        {/* Contact grid - 3 columns */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12" data-reveal>
+          {/* Email card */}
+          <div className="group relative border border-border bg-card/50 backdrop-blur-sm p-8 hover:border-lime/50 transition-all duration-500 md:col-span-2"
+            style={{ perspective: "600px" }}>
+            <div className="absolute inset-0 bg-gradient-to-br from-lime/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="relative">
+              <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest mb-4 block">Drop a line</span>
+              <a href="mailto:hello@kunalbaghele.dev" data-hover
+                className="font-display font-bold text-2xl sm:text-3xl md:text-4xl text-foreground hover:text-lime transition-all duration-300 inline-block group-hover:translate-x-2">
+                hello@kunalbaghele.dev
+              </a>
+              <div className="h-[2px] w-0 group-hover:w-full bg-lime/50 transition-all duration-500 mt-2" />
+              <p className="font-mono text-xs text-muted-foreground mt-4">Response time: ~24 hours</p>
+            </div>
           </div>
 
-          {/* Socials */}
-          <div className="flex gap-3 items-center md:justify-end">
-            {socials.map((s) => (
-              <a key={s.name} href={s.href} data-hover aria-label={s.name}
-                className="w-11 h-11 border border-border flex items-center justify-center hover:bg-lime hover:border-lime group transition-all duration-200">
-                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-foreground group-hover:fill-background transition-colors">{s.icon}</svg>
-              </a>
-            ))}
+          {/* Location card */}
+          <div className="group relative border border-border bg-card/50 backdrop-blur-sm p-8 hover:border-ice/50 transition-all duration-500">
+            <div className="absolute inset-0 bg-gradient-to-br from-ice/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="relative">
+              <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest mb-4 block">Based in</span>
+              <p className="font-display font-bold text-2xl text-foreground mb-1">India 🇮🇳</p>
+              <p className="font-mono text-xs text-muted-foreground">Available for remote work</p>
+              <div className="mt-6 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-lime" style={{ animation: "pulse-dot 2s infinite" }} />
+                <span className="font-mono text-[11px] text-lime">Currently available</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <a href="#" data-hover data-reveal className="block w-full border border-lime text-lime font-display font-bold text-center py-4 hover:bg-lime hover:text-background transition-all duration-200">
-          DOWNLOAD RESUME [PDF]
-        </a>
+        {/* Socials row */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8" data-reveal>
+          {socials.map((s) => (
+            <a key={s.name} href={s.href} data-hover aria-label={s.name}
+              onMouseEnter={() => setHoveredSocial(s.name)}
+              onMouseLeave={() => setHoveredSocial(null)}
+              className="group relative h-20 border border-border bg-card/30 flex items-center justify-center gap-3 hover:bg-lime hover:border-lime transition-all duration-300 overflow-hidden"
+              style={{ perspective: "400px" }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-t from-lime/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-foreground group-hover:fill-background transition-colors relative z-10">{s.icon}</svg>
+              <span className="font-mono text-xs text-foreground group-hover:text-background transition-colors relative z-10">{s.name}</span>
+              {/* 3D shine on hover */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+            </a>
+          ))}
+        </div>
+
+        {/* Resume button - full width, 3D feel */}
+        <div data-reveal style={{ perspective: "600px" }}>
+          <a href="#" data-hover
+            className="group relative block w-full border border-lime text-lime font-display font-bold text-center py-5 text-lg overflow-hidden transition-all duration-300 hover:text-background hover:shadow-[0_0_40px_rgba(200,255,0,0.15)]">
+            <div className="absolute inset-0 bg-lime scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+            <span className="relative z-10 flex items-center justify-center gap-3">
+              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-2">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+              </svg>
+              DOWNLOAD RESUME [PDF]
+            </span>
+          </a>
+        </div>
+
+        {/* Decorative floating elements */}
+        <div className="absolute -top-10 -right-10 w-20 h-20 border border-lime/10 rotate-45" style={{ animation: "float-slow 6s ease-in-out infinite" }} />
+        <div className="absolute -bottom-10 -left-10 w-16 h-16 border border-ice/10 rotate-12" style={{ animation: "float 5s ease-in-out infinite" }} />
       </div>
     </section>
   );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, MouseEvent } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 type Category = "ALL" | "FRONTEND" | "BACKEND" | "TOOLS" | "DESIGN";
@@ -30,6 +30,43 @@ const learning = [
 
 const tabs: Category[] = ["ALL", "FRONTEND", "BACKEND", "TOOLS", "DESIGN"];
 
+const SkillCard = ({ s }: { s: typeof skills[0] }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const onMove = (e: MouseEvent) => {
+    const rect = ref.current!.getBoundingClientRect();
+    const x = ((e.clientY - rect.top) / rect.height - 0.5) * -6;
+    const y = ((e.clientX - rect.left) / rect.width - 0.5) * 6;
+    setTilt({ x, y });
+  };
+
+  return (
+    <div
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseLeave={() => setTilt({ x: 0, y: 0 })}
+      data-hover
+      className="group border border-border bg-card/50 backdrop-blur-sm p-4 hover:border-lime/30 transition-all duration-300 hover:shadow-[0_10px_30px_-10px_rgba(200,255,0,0.1)]"
+      style={{
+        perspective: "400px",
+        transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+        transition: "transform 0.15s ease-out, border-color 0.3s, box-shadow 0.3s",
+      }}
+    >
+      <div className="flex items-center gap-2 mb-3">
+        <span className="w-2.5 h-2.5 rounded-full shadow-lg" style={{ backgroundColor: s.color, boxShadow: `0 0 8px ${s.color}40` }} />
+        <span className="font-mono text-xs text-foreground">{s.name}</span>
+        <span className="font-mono text-[9px] text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition-opacity">{s.pct}%</span>
+      </div>
+      <div className="h-1.5 bg-muted overflow-hidden">
+        <div className="h-full origin-left transition-transform duration-700 scale-x-0 group-hover:scale-x-100"
+          style={{ width: `${s.pct}%`, background: `linear-gradient(90deg, ${s.color}80, ${s.color})` }} />
+      </div>
+    </div>
+  );
+};
+
 const SkillsSection = () => {
   const ref = useScrollReveal<HTMLElement>();
   const [tab, setTab] = useState<Category>("ALL");
@@ -43,38 +80,30 @@ const SkillsSection = () => {
       <div className="max-w-7xl mx-auto" data-reveal>
         <h2 className="font-display font-[800] text-4xl md:text-5xl border-b border-border pb-6 mb-8">TECH STACK</h2>
 
-        {/* Tabs */}
         <div className="flex flex-wrap gap-2 mb-10" data-reveal>
           {tabs.map((t) => (
             <button key={t} onClick={() => setTab(t)} data-hover
-              className={`font-mono text-[11px] px-4 py-1.5 border transition-all duration-200 ${tab === t ? "bg-lime text-background border-lime" : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"}`}>
+              className={`font-mono text-[11px] px-4 py-2 border transition-all duration-300 ${
+                tab === t
+                  ? "bg-lime text-background border-lime shadow-[0_0_20px_rgba(200,255,0,0.15)]"
+                  : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+              }`}>
               {t}
             </button>
           ))}
         </div>
 
-        {/* Skills grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-16" data-reveal>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-16" data-reveal>
           {filtered.map((s) => (
-            <div key={s.name} className="group border border-border bg-card p-3 hover:-translate-y-1 transition-all duration-200" data-hover>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: s.color }} />
-                <span className="font-mono text-xs text-foreground">{s.name}</span>
-              </div>
-              <div className="h-1 bg-muted overflow-hidden rounded-sm">
-                <div className="h-full bg-lime origin-left transition-transform duration-500 scale-x-0 group-hover:scale-x-100" style={{ maxWidth: `${s.pct}%`, width: "100%" }} />
-              </div>
-              <span className="font-mono text-[9px] text-muted-foreground mt-1 block opacity-0 group-hover:opacity-100 transition-opacity">{s.pct}%</span>
-            </div>
+            <SkillCard key={s.name} s={s} />
           ))}
         </div>
 
-        {/* Currently Learning */}
         <div data-reveal>
           <h3 className="font-mono text-xs text-muted-foreground uppercase tracking-widest mb-4">Currently Learning</h3>
           <div className="flex flex-wrap gap-3">
             {learning.map((l) => (
-              <span key={l.name} className="border border-dashed border-muted-foreground/30 px-4 py-2 font-mono text-xs" style={{ color: l.color }}>
+              <span key={l.name} className="border border-dashed border-muted-foreground/30 px-5 py-2.5 font-mono text-xs hover:border-lime/50 transition-colors duration-300" style={{ color: l.color }}>
                 {l.name}
               </span>
             ))}
