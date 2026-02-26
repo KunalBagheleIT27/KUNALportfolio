@@ -14,11 +14,11 @@ const AboutSection = () => {
     <section id="about" ref={ref} className="relative py-32 px-6 md:px-10">
       <span className="absolute top-8 left-6 md:left-10 font-mono text-[10px] text-muted-foreground/30">{"// 003 ABOUT"}</span>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-16">
-        {/* Left - Photo + Statement */}
-        <div className="lg:col-span-2 flex flex-col gap-8" data-reveal>
-          {/* Photo placeholder */}
-          <div className="relative group w-full max-w-xs">
+      <div className="max-w-7xl mx-auto space-y-20">
+        {/* Top: Photo left + About info right */}
+        <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-10 lg:gap-16 items-start" data-reveal>
+          {/* Left - Photo */}
+          <div className="relative group w-full max-w-[280px]">
             <div className="absolute inset-0 border border-lime translate-x-1 translate-y-1" />
             <div className="relative aspect-[3/4] bg-muted border border-muted-foreground/20 overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500">
               <div className="absolute inset-0 bg-lime/20 opacity-0 group-hover:opacity-100 transition-opacity mix-blend-color" />
@@ -26,28 +26,32 @@ const AboutSection = () => {
             </div>
           </div>
 
-          <div>
-            <p className="text-foreground/80 mb-6 leading-relaxed">
-              I'm Kunal — a developer obsessed with the intersection of engineering precision and design intuition. 
+          {/* Right - About data */}
+          <div className="flex flex-col gap-6">
+            <h2 className="font-display font-[800] text-4xl md:text-5xl border-b border-border pb-4">ABOUT ME</h2>
+            <p className="text-foreground/80 leading-relaxed max-w-xl">
+              I'm Kunal — a developer obsessed with the intersection of engineering precision and design intuition.
               Every line of code I write is in service of experiences that feel inevitable.
             </p>
-            <div className="font-mono text-xs text-muted-foreground space-y-1.5">
-              <p>{">"} Currently obsessed with: Web animations</p>
-              <p>{">"} Side quest: Contributing to OSS</p>
-              <p>{">"} When not coding: Photography 📷</p>
-              <p>{">"} Location: India 🇮🇳</p>
+            <p className="text-muted-foreground leading-relaxed max-w-xl">
+              Full-Stack Developer & UI Engineer based in India, passionate about crafting interfaces that users remember.
+              I thrive in hackathons, open-source communities, and building products that push boundaries.
+            </p>
+            <div className="font-mono text-xs text-muted-foreground space-y-1.5 mt-2">
+              <p><span className="text-lime">{">"}</span> Currently obsessed with: Web animations</p>
+              <p><span className="text-lime">{">"}</span> Side quest: Contributing to OSS</p>
+              <p><span className="text-lime">{">"}</span> When not coding: Photography 📷</p>
+              <p><span className="text-lime">{">"}</span> Location: India 🇮🇳</p>
             </div>
           </div>
         </div>
 
-        {/* Right - Timeline */}
-        <div className="lg:col-span-3" data-reveal>
+        {/* Bottom: Timeline */}
+        <div data-reveal>
           <h2 className="font-display font-[800] text-4xl md:text-5xl border-b border-border pb-6 mb-10">JOURNEY</h2>
 
           <div className="relative pl-8">
-            {/* Vertical line */}
             <div className="absolute left-[7px] top-2 bottom-2 w-[1px] bg-border" />
-
             {timeline.map((item, i) => (
               <TimelineItem key={item.year} item={item} index={i} />
             ))}
@@ -63,7 +67,6 @@ const TimelineItem = ({ item, index }: { item: typeof timeline[0]; index: number
 
   return (
     <div ref={ref} className="relative mb-12 last:mb-0">
-      {/* Dot */}
       <div className="absolute -left-8 top-1.5 w-[14px] h-[14px] rounded-full border-2 border-lime bg-background" />
       <span className="font-mono text-sm text-lime mb-1 block">{item.year}</span>
       <h3 className="font-display font-bold text-lg text-foreground">{item.title}</h3>
