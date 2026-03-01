@@ -1,5 +1,6 @@
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useRef, useState, MouseEvent } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const awards = [
   { emoji: "🏆", name: "Smart India Hackathon 2024", issuer: "Government of India", year: "2024", desc: "National-level winner among 50,000+ participants" },
@@ -15,6 +16,7 @@ const marqueeItems = [
 ];
 
 const AwardCard = ({ a }: { a: typeof awards[0] }) => {
+  const isMobile = useIsMobile();
   const ref = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
@@ -29,8 +31,18 @@ const AwardCard = ({ a }: { a: typeof awards[0] }) => {
   return (
     <div
       ref={ref}
-      onMouseMove={onMove}
+      onMouseMove={(e) => !isMobile && onMove(e)}
       onMouseLeave={() => setTilt({ x: 0, y: 0 })}
+      onTouchMove={(e) => {
+        if (!ref.current || !isMobile) return;
+        const touch = e.touches[0];
+        const rect = ref.current.getBoundingClientRect();
+        setTilt({
+          x: ((touch.clientY - rect.top) / rect.height - 0.5) * -5,
+          y: ((touch.clientX - rect.left) / rect.width - 0.5) * 5,
+        });
+      }}
+      onTouchEnd={() => setTilt({ x: 0, y: 0 })}
       data-hover
       data-reveal
       className="group border border-border bg-card/50 backdrop-blur-sm p-8 hover:border-lime/50 transition-all duration-300 hover:shadow-[0_20px_50px_-15px_rgba(200,255,0,0.1)]"
@@ -38,6 +50,7 @@ const AwardCard = ({ a }: { a: typeof awards[0] }) => {
         perspective: "600px",
         transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
         transition: "transform 0.15s ease-out, border-color 0.3s, box-shadow 0.3s",
+        animation: isMobile ? "float-slow 5s ease-in-out infinite" : undefined,
       }}
     >
       <div className="relative">
@@ -56,7 +69,7 @@ const AwardsSection = () => {
   const ref = useScrollReveal<HTMLElement>();
 
   return (
-    <section ref={ref} className="relative py-32">
+    <section ref={ref} className="relative py-20 md:py-32">
       <span className="absolute top-8 left-6 md:left-10 font-mono text-[10px] text-muted-foreground/30">{"// 005 AWARDS"}</span>
 
       {/* Marquee with depth */}

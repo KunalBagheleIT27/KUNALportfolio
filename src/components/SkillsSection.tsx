@@ -1,5 +1,6 @@
 import { useState, useRef, MouseEvent } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type Category = "ALL" | "FRONTEND" | "BACKEND" | "TOOLS" | "DESIGN";
 
@@ -31,6 +32,7 @@ const learning = [
 const tabs: Category[] = ["ALL", "FRONTEND", "BACKEND", "TOOLS", "DESIGN"];
 
 const SkillCard = ({ s }: { s: typeof skills[0] }) => {
+  const isMobile = useIsMobile();
   const ref = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
@@ -44,23 +46,33 @@ const SkillCard = ({ s }: { s: typeof skills[0] }) => {
   return (
     <div
       ref={ref}
-      onMouseMove={onMove}
+      onMouseMove={(e) => !isMobile && onMove(e)}
       onMouseLeave={() => setTilt({ x: 0, y: 0 })}
+      onTouchMove={(e) => {
+        if (!ref.current || !isMobile) return;
+        const touch = e.touches[0];
+        const rect = ref.current.getBoundingClientRect();
+        const x = ((touch.clientY - rect.top) / rect.height - 0.5) * -4;
+        const y = ((touch.clientX - rect.left) / rect.width - 0.5) * 4;
+        setTilt({ x, y });
+      }}
+      onTouchEnd={() => setTilt({ x: 0, y: 0 })}
       data-hover
       className="group border border-border bg-card/50 backdrop-blur-sm p-4 hover:border-lime/30 transition-all duration-300 hover:shadow-[0_10px_30px_-10px_rgba(200,255,0,0.1)]"
       style={{
         perspective: "400px",
         transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
         transition: "transform 0.15s ease-out, border-color 0.3s, box-shadow 0.3s",
+        animation: isMobile ? "float-slow 5s ease-in-out infinite" : undefined,
       }}
     >
       <div className="flex items-center gap-2 mb-3">
         <span className="w-2.5 h-2.5 rounded-full shadow-lg" style={{ backgroundColor: s.color, boxShadow: `0 0 8px ${s.color}40` }} />
         <span className="font-mono text-xs text-foreground">{s.name}</span>
-        <span className="font-mono text-[9px] text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition-opacity">{s.pct}%</span>
+        <span className={`font-mono text-[9px] text-muted-foreground ml-auto transition-opacity ${isMobile ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>{s.pct}%</span>
       </div>
       <div className="h-1.5 bg-muted overflow-hidden">
-        <div className="h-full origin-left transition-transform duration-700 scale-x-0 group-hover:scale-x-100"
+        <div className={`h-full origin-left transition-transform duration-700 ${isMobile ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`}
           style={{ width: `${s.pct}%`, background: `linear-gradient(90deg, ${s.color}80, ${s.color})` }} />
       </div>
     </div>
@@ -74,7 +86,7 @@ const SkillsSection = () => {
   const filtered = tab === "ALL" ? skills : skills.filter((s) => s.cat.includes(tab));
 
   return (
-    <section id="skills" ref={ref} className="relative py-32 px-6 md:px-10">
+    <section id="skills" ref={ref} className="relative py-20 md:py-32 px-4 sm:px-6 md:px-10">
       <span className="absolute top-8 left-6 md:left-10 font-mono text-[10px] text-muted-foreground/30">{"// 004 SKILLS"}</span>
 
       <div className="max-w-7xl mx-auto" data-reveal>

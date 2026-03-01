@@ -1,10 +1,14 @@
 import { useState, useRef, MouseEvent, useEffect } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const projects = [
   {
     num: "01", name: "NEXUS", tagline: "AI-powered task management platform",
     metric: "3,200+ weekly users", stack: ["React", "Node.js", "OpenAI API"],
+    visualTag: "AI TASKS",
+    demoUrl: "#contact",
+    codeUrl: "https://github.com/KunalBagheleIT27/KUNALportfolio",
     gradient: "linear-gradient(135deg, #00D9FF 0%, #C8FF00 50%, #8B5CF6 100%)",
     problem: "Teams struggled with task prioritization across complex projects.",
     solution: "Built an AI-powered platform that auto-prioritizes and assigns tasks based on team velocity and skill matching.",
@@ -14,6 +18,9 @@ const projects = [
   {
     num: "02", name: "PRISM", tagline: "Real-time design collaboration tool",
     metric: "57% faster load time", stack: ["Next.js", "WebSockets", "Redis"],
+    visualTag: "LIVE CANVAS",
+    demoUrl: "#contact",
+    codeUrl: "https://github.com/KunalBagheleIT27/KUNALportfolio",
     gradient: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #00D9FF 100%)",
     problem: "Design teams needed real-time collaboration without the overhead of traditional tools.",
     solution: "Created a WebSocket-powered canvas with conflict-free replicated data types (CRDTs) for seamless multi-user editing.",
@@ -23,6 +30,9 @@ const projects = [
   {
     num: "03", name: "ORBIT", tagline: "Student hackathon platform for campuses",
     metric: "12 colleges onboarded", stack: ["React", "Firebase", "TailwindCSS"],
+    visualTag: "HACKATHON HUB",
+    demoUrl: "#contact",
+    codeUrl: "https://github.com/KunalBagheleIT27/KUNALportfolio",
     gradient: "linear-gradient(135deg, #C8FF00 0%, #00D9FF 50%, #F97316 100%)",
     problem: "College hackathons lacked a unified platform for registration, team formation, and project submission.",
     solution: "Built a full-stack platform that streamlines the entire hackathon lifecycle from registration to judging.",
@@ -32,6 +42,7 @@ const projects = [
 ];
 
 const WorkSection = () => {
+  const isMobile = useIsMobile();
   const sectionRef = useScrollReveal<HTMLElement>();
   const [modal, setModal] = useState<number | null>(null);
 
@@ -42,8 +53,46 @@ const WorkSection = () => {
     };
   }, [modal]);
 
+  useEffect(() => {
+    const openFromHash = () => {
+      const hash = window.location.hash;
+      const match = hash.match(/^#project-(\d+)$/);
+      if (!match) return;
+      const idx = Number(match[1]) - 1;
+      if (idx >= 0 && idx < projects.length) {
+        setModal(idx);
+      }
+    };
+
+    const onPopState = () => {
+      const hash = window.location.hash;
+      if (!hash.startsWith("#project-")) {
+        setModal(null);
+      } else {
+        openFromHash();
+      }
+    };
+
+    openFromHash();
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  const openModal = (index: number) => {
+    setModal(index);
+    window.history.pushState({ project: index }, "", `#project-${index + 1}`);
+  };
+
+  const closeModal = () => {
+    if (window.location.hash.startsWith("#project-")) {
+      window.history.back();
+      return;
+    }
+    setModal(null);
+  };
+
   return (
-    <section id="work" ref={sectionRef} className="relative py-32 px-6 md:px-10">
+    <section id="work" ref={sectionRef} className="relative py-20 md:py-32 px-4 sm:px-6 md:px-10">
       <span className="absolute top-8 left-6 md:left-10 font-mono text-[10px] text-muted-foreground/30">{"// 002 WORK"}</span>
 
       <div className="max-w-7xl mx-auto" data-reveal>
@@ -55,16 +104,16 @@ const WorkSection = () => {
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
         {projects.map((p, i) => (
-          <ProjectCard key={p.num} project={p} index={i} onOpen={() => setModal(i)} />
+          <ProjectCard key={p.num} project={p} index={i} onOpen={() => openModal(i)} isMobile={isMobile} />
         ))}
       </div>
 
-      {modal !== null && <CaseStudyModal project={projects[modal]} onClose={() => setModal(null)} />}
+      {modal !== null && <CaseStudyModal project={projects[modal]} onClose={closeModal} />}
     </section>
   );
 };
 
-const ProjectCard = ({ project: p, index, onOpen }: { project: typeof projects[0]; index: number; onOpen: () => void }) => {
+const ProjectCard = ({ project: p, index, onOpen, isMobile }: { project: typeof projects[0]; index: number; onOpen: () => void; isMobile: boolean }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [glare, setGlare] = useState({ x: 50, y: 50 });
@@ -84,14 +133,27 @@ const ProjectCard = ({ project: p, index, onOpen }: { project: typeof projects[0
       <div
         ref={cardRef}
         onClick={onOpen}
-        onMouseMove={onMouseMove}
+        onMouseMove={(e) => !isMobile && onMouseMove(e)}
         onMouseLeave={() => { setTilt({ x: 0, y: 0 }); setGlare({ x: 50, y: 50 }); }}
+        onTouchMove={(e) => {
+          if (!cardRef.current || !isMobile) return;
+          const touch = e.touches[0];
+          const rect = cardRef.current.getBoundingClientRect();
+          const px = (touch.clientX - rect.left) / rect.width;
+          const py = (touch.clientY - rect.top) / rect.height;
+          const x = (py - 0.5) * -6;
+          const y = (px - 0.5) * 6;
+          setTilt({ x, y });
+          setGlare({ x: px * 100, y: py * 100 });
+        }}
+        onTouchEnd={() => { setTilt({ x: 0, y: 0 }); setGlare({ x: 50, y: 50 }); }}
         data-hover
         className="group relative border border-border bg-card overflow-hidden transition-all duration-300 hover:border-lime hover:shadow-[0_20px_60px_-20px_rgba(200,255,0,0.15)]"
         style={{
           aspectRatio: "4/5",
           transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
           transition: "transform 0.2s cubic-bezier(0.2,0.8,0.2,1), border-color 0.3s, box-shadow 0.3s",
+          animation: isMobile ? `float-slow ${4 + index}s ease-in-out infinite` : undefined,
         }}
       >
         {/* Glare overlay */}
@@ -103,6 +165,20 @@ const ProjectCard = ({ project: p, index, onOpen }: { project: typeof projects[0
           <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-[1.06]" style={{ background: p.gradient }} />
           <div className="absolute inset-0 bg-background/30 group-hover:bg-background/10 transition-all duration-500" />
           <span className="absolute top-3 right-3 font-mono text-[9px] text-lime bg-background/80 backdrop-blur-sm px-2 py-1 z-10">CASE STUDY</span>
+          <span className="absolute top-3 left-3 font-mono text-[9px] text-background bg-foreground/70 backdrop-blur-sm px-2 py-1 z-10">{p.visualTag}</span>
+
+          <div className="absolute left-4 right-4 top-12 z-10 border border-foreground/20 bg-background/40 backdrop-blur-sm p-3">
+            <div className="flex items-center gap-1.5 mb-2">
+              <span className="w-2 h-2 rounded-full bg-lime" />
+              <span className="w-2 h-2 rounded-full bg-foreground/40" />
+              <span className="w-2 h-2 rounded-full bg-foreground/25" />
+            </div>
+            <div className="space-y-1.5">
+              <div className="h-1.5 w-full bg-foreground/20" />
+              <div className="h-1.5 w-4/5 bg-foreground/30" />
+              <div className="h-1.5 w-2/3 bg-lime/70" />
+            </div>
+          </div>
           {/* Project number watermark */}
           <span className="absolute bottom-2 left-4 font-display font-[800] text-[80px] leading-none text-foreground/5 z-0">{p.num}</span>
         </div>
@@ -131,7 +207,16 @@ const ProjectCard = ({ project: p, index, onOpen }: { project: typeof projects[0
   );
 };
 
-const CaseStudyModal = ({ project: p, onClose }: { project: typeof projects[0]; onClose: () => void }) => (
+const CaseStudyModal = ({ project: p, onClose }: { project: typeof projects[0]; onClose: () => void }) => {
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
+
+  return (
   <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-md overflow-auto" style={{ animation: "clip-reveal 0.4s cubic-bezier(0.2,0.8,0.2,1)" }} onClick={onClose}>
     <div className="max-w-4xl mx-auto py-20 px-6" onClick={(e) => e.stopPropagation()}>
       <div className="fixed top-4 left-4 right-4 flex items-center justify-between z-50">
@@ -140,7 +225,7 @@ const CaseStudyModal = ({ project: p, onClose }: { project: typeof projects[0]; 
       </div>
 
       <span className="font-mono text-lime text-sm">{p.num}</span>
-      <h2 className="font-display font-[800] text-5xl md:text-6xl mt-2 mb-2">{p.name}</h2>
+      <h2 className="font-display font-[800] text-4xl sm:text-5xl md:text-6xl mt-2 mb-2">{p.name}</h2>
       <p className="text-muted-foreground mb-10 text-lg">{p.tagline}</p>
 
       <div className="space-y-10">
@@ -173,9 +258,16 @@ const CaseStudyModal = ({ project: p, onClose }: { project: typeof projects[0]; 
             {p.stack.map((t) => <span key={t} className="border border-lime/30 px-4 py-1.5 font-mono text-xs text-lime">{t}</span>)}
           </div>
         </div>
+
+        <div className="flex flex-wrap gap-3 pt-2">
+          <a href={p.demoUrl} data-hover className="border border-lime px-4 py-2 font-mono text-xs text-lime hover:bg-lime hover:text-background transition-colors">LIVE PREVIEW ↗</a>
+          <a href={p.codeUrl} target="_blank" rel="noreferrer" data-hover className="border border-foreground/40 px-4 py-2 font-mono text-xs text-foreground hover:bg-foreground hover:text-background transition-colors">VIEW CODE ↗</a>
+          <button onClick={onClose} data-hover className="border border-border px-4 py-2 font-mono text-xs text-muted-foreground hover:text-foreground transition-colors">BACK TO PROJECTS</button>
+        </div>
       </div>
     </div>
   </div>
-);
+  );
+};
 
 export default WorkSection;
