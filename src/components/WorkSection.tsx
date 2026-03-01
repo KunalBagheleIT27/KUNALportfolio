@@ -1,4 +1,4 @@
-import { useState, useRef, MouseEvent } from "react";
+import { useState, useRef, MouseEvent, useEffect } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const projects = [
@@ -34,6 +34,13 @@ const projects = [
 const WorkSection = () => {
   const sectionRef = useScrollReveal<HTMLElement>();
   const [modal, setModal] = useState<number | null>(null);
+
+  useEffect(() => {
+    document.body.style.overflow = modal !== null ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [modal]);
 
   return (
     <section id="work" ref={sectionRef} className="relative py-32 px-6 md:px-10">
@@ -127,7 +134,10 @@ const ProjectCard = ({ project: p, index, onOpen }: { project: typeof projects[0
 const CaseStudyModal = ({ project: p, onClose }: { project: typeof projects[0]; onClose: () => void }) => (
   <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-md overflow-auto" style={{ animation: "clip-reveal 0.4s cubic-bezier(0.2,0.8,0.2,1)" }} onClick={onClose}>
     <div className="max-w-4xl mx-auto py-20 px-6" onClick={(e) => e.stopPropagation()}>
-      <button onClick={onClose} data-hover className="fixed top-6 right-6 font-mono text-sm text-lime hover:text-foreground transition-colors z-50">✕ CLOSE</button>
+      <div className="fixed top-4 left-4 right-4 flex items-center justify-between z-50">
+        <button onClick={onClose} data-hover className="font-mono text-xs sm:text-sm text-lime hover:text-foreground transition-colors border border-lime/40 px-3 py-1.5">← BACK</button>
+        <button onClick={onClose} data-hover className="font-mono text-xs sm:text-sm text-lime hover:text-foreground transition-colors border border-lime/40 px-3 py-1.5">✕ CLOSE</button>
+      </div>
 
       <span className="font-mono text-lime text-sm">{p.num}</span>
       <h2 className="font-display font-[800] text-5xl md:text-6xl mt-2 mb-2">{p.name}</h2>
