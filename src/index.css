@@ -55,7 +55,6 @@
 @layer base {
   * {
     @apply border-border;
-    cursor: none !important;
     transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
@@ -84,9 +83,32 @@
     transition-duration: 240ms;
   }
 
+  [data-hover] {
+    transition-property: transform, box-shadow, color, background-color, border-color, opacity;
+    transition-duration: 240ms;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  [data-hover]:hover {
+    transform: translateY(-2px);
+  }
+
   ::selection {
     background: hsl(72 100% 50% / 0.3);
     color: white;
+  }
+}
+
+@media (pointer: fine) {
+  * {
+    cursor: none !important;
+  }
+}
+
+@media (hover: none) {
+  [data-hover]:active {
+    transform: translateY(-1px) scale(0.985);
+    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.35);
   }
 }
 

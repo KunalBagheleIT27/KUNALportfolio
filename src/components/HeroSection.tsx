@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, MouseEvent } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const commands = [
   '> npm run build... ✓ compiled in 1.2s',
@@ -15,6 +16,7 @@ const badges = [
 ];
 
 const HeroSection = () => {
+  const revealRef = useScrollReveal<HTMLElement>(70);
   const isMobile = useIsMobile();
   const [cmdIndex, setCmdIndex] = useState(0);
   const [text, setText] = useState("");
@@ -48,7 +50,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section id="home" className="relative min-h-[100svh] flex items-center pt-16 pb-10 px-4 sm:px-6 md:px-10 overflow-hidden">
+    <section id="home" ref={revealRef} className="relative min-h-[100svh] flex items-center pt-16 pb-10 px-4 sm:px-6 md:px-10 overflow-hidden">
       <span className="absolute top-20 left-6 md:left-10 font-mono text-[10px] text-muted-foreground/30">{"// 001 HERO"}</span>
 
       {/* Ambient glows */}
@@ -57,7 +59,7 @@ const HeroSection = () => {
 
       <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8 sm:gap-10 lg:gap-12 items-center">
         {/* Left */}
-        <div className="lg:col-span-3 flex flex-col gap-6">
+        <div className="lg:col-span-3 flex flex-col gap-6" data-reveal="left">
           <span className="flex items-center gap-2 font-mono text-[11px] text-lime uppercase tracking-[0.15em]">
             <span className="w-2 h-2 rounded-full bg-lime" style={{ animation: "pulse-dot 2s infinite" }} />
             Available for Opportunities
@@ -91,7 +93,7 @@ const HeroSection = () => {
         </div>
 
         {/* Right - Terminal with 3D tilt */}
-        <div className="lg:col-span-2 relative flex items-center justify-center min-h-[300px] sm:min-h-[350px]" style={{ perspective: "800px" }}>
+        <div className="lg:col-span-2 relative flex items-center justify-center min-h-[300px] sm:min-h-[350px]" style={{ perspective: "800px" }} data-reveal="right">
           {/* Lime glow */}
           <div className="absolute w-72 h-72 rounded-full bg-lime/10 blur-[100px]" />
           <div className="absolute w-40 h-40 rounded-full bg-ice/10 blur-[60px] translate-x-20 translate-y-10" />
@@ -136,10 +138,10 @@ const HeroSection = () => {
           </div>
 
           {/* Orbiting badges with glow */}
-          {badges.map((b, index) => (
-            <div key={b.name} className={`absolute inset-0 flex items-center justify-center pointer-events-none ${isMobile && index > 1 ? "hidden" : ""}`}>
+          {badges.map((b) => (
+            <div key={b.name} className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <span className="font-mono text-[9px] border px-2.5 py-1 bg-card/80 backdrop-blur-sm shadow-lg"
-                style={{ borderColor: b.color, color: b.color, animation: b.anim, boxShadow: `0 0 20px ${b.color}15` }}>
+                style={{ borderColor: b.color, color: b.color, animation: b.anim, boxShadow: `0 0 20px ${b.color}15`, transform: isMobile ? "scale(0.86)" : "scale(1)" }}>
                 {b.name}
               </span>
             </div>
@@ -148,7 +150,7 @@ const HeroSection = () => {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
         <span className="font-mono text-[10px] text-muted-foreground tracking-widest">SCROLL</span>
         <svg width="12" height="12" viewBox="0 0 12 12" className="text-lime" style={{ animation: "bounce-down 1.5s infinite" }}>
           <path d="M1 4L6 9L11 4" stroke="currentColor" strokeWidth="1.5" fill="none" />

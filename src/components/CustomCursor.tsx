@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const CustomCursor = () => {
+  const [enabled, setEnabled] = useState(false);
   const dotRef = useRef<HTMLDivElement>(null);
   const circleRef = useRef<HTMLDivElement>(null);
   const mouse = useRef({ x: 0, y: 0 });
@@ -9,6 +10,7 @@ const CustomCursor = () => {
 
   useEffect(() => {
     const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+    setEnabled(hasFinePointer);
     if (!hasFinePointer) return;
 
     const onMove = (e: MouseEvent) => {
@@ -48,6 +50,10 @@ const CustomCursor = () => {
       cancelAnimationFrame(raf);
     };
   }, []);
+
+  if (!enabled) {
+    return null;
+  }
 
   return (
     <>
