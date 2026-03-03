@@ -63,7 +63,7 @@ const SkillCard = ({ s }: { s: typeof skills[0] }) => {
         perspective: "400px",
         transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
         transition: "transform 0.15s ease-out, border-color 0.3s, box-shadow 0.3s",
-        animation: isMobile ? "float-slow 5s ease-in-out infinite" : undefined,
+        animation: undefined,
       }}
     >
       <div className="flex items-center gap-2 mb-3">
@@ -90,7 +90,7 @@ const SkillsSection = () => {
       <span className="absolute top-8 left-6 md:left-10 font-mono text-[10px] text-muted-foreground/30">{"// 004 SKILLS"}</span>
 
       <div className="max-w-7xl mx-auto" data-reveal>
-        <h2 className="font-display font-[800] text-4xl md:text-5xl border-b border-border pb-6 mb-8">TECH STACK</h2>
+        <h2 className="font-display font-[800] text-3xl sm:text-4xl md:text-5xl border-b border-border pb-6 mb-8">TECH STACK</h2>
 
         <div className="flex flex-wrap gap-2 mb-10" data-reveal>
           {tabs.map((t) => (

@@ -13,8 +13,10 @@ const BackgroundCanvas = () => {
     const ctx = canvas.getContext("2d")!;
     let w = (canvas.width = window.innerWidth);
     let h = (canvas.height = window.innerHeight);
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    const dotCount = isMobile ? 30 : 60;
 
-    const dots: Dot[] = Array.from({ length: 60 }, () => ({
+    const dots: Dot[] = Array.from({ length: dotCount }, () => ({
       x: Math.random() * w, y: Math.random() * h,
       vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
       baseOpacity: 0.06,
@@ -32,8 +34,9 @@ const BackgroundCanvas = () => {
       // Grid
       ctx.strokeStyle = "rgba(255,255,255,0.03)";
       ctx.lineWidth = 0.5;
-      for (let x = 0; x < w; x += 80) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
-      for (let y = 0; y < h; y += 80) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+      const gridSize = isMobile ? 110 : 80;
+      for (let x = 0; x < w; x += gridSize) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+      for (let y = 0; y < h; y += gridSize) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
 
       // Dots
       const mx = mouse.current.x, my = mouse.current.y;

@@ -55,7 +55,7 @@ const HeroSection = () => {
       <div className="absolute top-1/3 right-1/4 w-[600px] h-[600px] rounded-full bg-lime/[0.04] blur-[150px] pointer-events-none" />
       <div className="absolute bottom-1/4 left-1/3 w-[400px] h-[400px] rounded-full bg-ice/[0.03] blur-[120px] pointer-events-none" />
 
-      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-12 items-center">
+      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8 sm:gap-10 lg:gap-12 items-center">
         {/* Left */}
         <div className="lg:col-span-3 flex flex-col gap-6">
           <span className="flex items-center gap-2 font-mono text-[11px] text-lime uppercase tracking-[0.15em]">
@@ -63,13 +63,13 @@ const HeroSection = () => {
             Available for Opportunities
           </span>
 
-          <h1 className="font-display font-[800] text-4xl sm:text-5xl md:text-7xl lg:text-[80px] leading-[0.95] tracking-tight">
+          <h1 className="font-display font-[800] text-3xl sm:text-5xl md:text-7xl lg:text-[80px] leading-[0.95] tracking-tight">
             <span className="block" style={{ animation: "clip-reveal 0.6s cubic-bezier(0.2,0.8,0.2,1) 0.1s both" }}>BUILDING</span>
             <span className="block text-stroke" style={{ animation: "clip-reveal 0.6s cubic-bezier(0.2,0.8,0.2,1) 0.25s both" }}>DIGITAL</span>
             <span className="block" style={{ animation: "clip-reveal 0.6s cubic-bezier(0.2,0.8,0.2,1) 0.4s both" }}>EXPERIENCES</span>
           </h1>
 
-          <p className="text-muted-foreground text-base max-w-[420px]">
+          <p className="text-muted-foreground text-sm sm:text-base max-w-[420px]">
             Full-Stack Developer & UI Engineer crafting interfaces that users remember.
           </p>
 
@@ -148,7 +148,7 @@ const HeroSection = () => {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2">
         <span className="font-mono text-[10px] text-muted-foreground tracking-widest">SCROLL</span>
         <svg width="12" height="12" viewBox="0 0 12 12" className="text-lime" style={{ animation: "bounce-down 1.5s infinite" }}>
           <path d="M1 4L6 9L11 4" stroke="currentColor" strokeWidth="1.5" fill="none" />

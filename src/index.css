@@ -56,12 +56,32 @@
   * {
     @apply border-border;
     cursor: none !important;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   body {
     @apply bg-background text-foreground;
     font-family: 'Space Grotesk', sans-serif;
     overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  section {
+    scroll-margin-top: 4.5rem;
+  }
+
+  a,
+  button,
+  input,
+  textarea,
+  select {
+    transition-property: color, background-color, border-color, opacity, transform, box-shadow;
+    transition-duration: 240ms;
   }
 
   ::selection {
@@ -150,5 +170,15 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .text-stroke {
+    -webkit-text-stroke: 1px white;
   }
 }

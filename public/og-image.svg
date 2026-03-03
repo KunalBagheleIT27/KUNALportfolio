@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Kunal Baghele portfolio preview">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#050505"/>
+      <stop offset="100%" stop-color="#111111"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#C8FF00"/>
+      <stop offset="100%" stop-color="#00D9FF"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="72" y="72" width="1056" height="486" fill="none" stroke="#2A2A2A"/>
+  <circle cx="980" cy="150" r="120" fill="#C8FF00" opacity="0.08"/>
+  <circle cx="220" cy="500" r="150" fill="#00D9FF" opacity="0.08"/>
+
+  <text x="110" y="240" fill="#C8FF00" font-family="'JetBrains Mono', monospace" font-size="28" letter-spacing="2">KUNAL BAGHELE</text>
+  <text x="110" y="330" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-size="74" font-weight="800">FULL-STACK DEVELOPER</text>
+  <text x="110" y="400" fill="#B3B3B3" font-family="'Space Grotesk', sans-serif" font-size="36">&amp; UI ENGINEER</text>
+  <rect x="110" y="442" width="520" height="8" fill="url(#accent)"/>
+  <text x="110" y="500" fill="#9CA3AF" font-family="'JetBrains Mono', monospace" font-size="24">React • TypeScript • Node.js • UI Systems</text>
+</svg>

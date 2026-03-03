@@ -4,40 +4,68 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const projects = [
   {
-    num: "01", name: "NEXUS", tagline: "AI-powered task management platform",
-    metric: "3,200+ weekly users", stack: ["React", "Node.js", "OpenAI API"],
-    visualTag: "AI TASKS",
+    num: "01", name: "NiyoganAI", tagline: "AI Metro Scheduler",
+    metric: "25 Trainsets Optimized", stack: ["React.js", "CSS3", "PostgreSQL", "FastAPI"],
+    visualTag: "AI / OPERATIONS",
     demoUrl: "#contact",
-    codeUrl: "https://github.com/KunalBagheleIT27/KUNALportfolio",
-    gradient: "linear-gradient(135deg, #00D9FF 0%, #C8FF00 50%, #8B5CF6 100%)",
-    problem: "Teams struggled with task prioritization across complex projects.",
-    solution: "Built an AI-powered platform that auto-prioritizes and assigns tasks based on team velocity and skill matching.",
-    role: "Lead Full-Stack Developer — architected the entire platform from database schema to production deployment.",
-    metrics: [{ label: "Weekly Users", value: "3,200+" }, { label: "Task Completion", value: "↑ 42%" }, { label: "Response Time", value: "<200ms" }, { label: "Uptime", value: "99.9%" }],
+    codeUrl: "https://github.com/KunalBagheleIT27",
+    gradient: "linear-gradient(135deg, #0F2D33 0%, #18C26E 100%)",
+    description:
+      "AI-driven Operations Dashboard for Kochi Metro Rail Limited (KMRL) to automate and optimize daily train scheduling for a fleet of 25 trainsets, improving operational visibility and decision-making efficiency.",
+    highlights: [
+      "Engineered dynamic frontend using React.js with real-time fleet data via REST API + PostgreSQL",
+      "Built color-coded status monitoring, dynamic issue tracking, performance-focused UI",
+      "Automated scheduling for 25+ trainsets, improving supervisor workflow efficiency",
+    ],
+    metrics: [
+      { label: "Trainsets", value: "25+" },
+      { label: "Status Visibility", value: "Real-Time" },
+      { label: "Decision Support", value: "AI-Driven" },
+      { label: "Ops Workflow", value: "Optimized" },
+    ],
   },
   {
-    num: "02", name: "PRISM", tagline: "Real-time design collaboration tool",
-    metric: "57% faster load time", stack: ["Next.js", "WebSockets", "Redis"],
-    visualTag: "LIVE CANVAS",
+    num: "02", name: "DocuFlow", tagline: "Document Workflow Platform",
+    metric: "3-Tier Role System", stack: ["React.js", "Vite", "TypeScript", "Spring Boot", "MongoDB"],
+    visualTag: "ENTERPRISE / SAAS",
     demoUrl: "#contact",
-    codeUrl: "https://github.com/KunalBagheleIT27/KUNALportfolio",
-    gradient: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #00D9FF 100%)",
-    problem: "Design teams needed real-time collaboration without the overhead of traditional tools.",
-    solution: "Created a WebSocket-powered canvas with conflict-free replicated data types (CRDTs) for seamless multi-user editing.",
-    role: "Frontend Lead — implemented the real-time rendering engine and optimized load performance by 57%.",
-    metrics: [{ label: "Load Time", value: "↓ 57%" }, { label: "Concurrent Users", value: "50+" }, { label: "Latency", value: "<16ms" }, { label: "Bundle Size", value: "↓ 40%" }],
+    codeUrl: "https://github.com/KunalBagheleIT27",
+    gradient: "linear-gradient(135deg, #6D28D9 0%, #DB2777 55%, #1E1B4B 100%)",
+    description:
+      "Product-grade Document Workflow Platform enabling teams to upload, review, and approve documents with Role-Based Workflows (Submitter/Reviewer/Approver) with audit-friendly metadata tracking.",
+    highlights: [
+      "Role-Based Access: Submitter / Reviewer / Approver with full document lifecycle management",
+      "React + Vite (TypeScript) frontend with Mock API, task inbox, template management",
+      "Spring Boot backend + MongoDB for full-stack scalability, Approve/Reject actions, dashboard analytics",
+    ],
+    metrics: [
+      { label: "Role Layers", value: "3" },
+      { label: "Workflow", value: "End-to-End" },
+      { label: "Backend", value: "Spring Boot" },
+      { label: "Database", value: "MongoDB" },
+    ],
   },
   {
-    num: "03", name: "ORBIT", tagline: "Student hackathon platform for campuses",
-    metric: "12 colleges onboarded", stack: ["React", "Firebase", "TailwindCSS"],
-    visualTag: "HACKATHON HUB",
+    num: "03", name: "CollegeSpace", tagline: "Campus Automation Android App",
+    metric: "Team of 6 Led", stack: ["XML", "Java"],
+    visualTag: "ANDROID / MOBILE",
+    year: "2024",
     demoUrl: "#contact",
-    codeUrl: "https://github.com/KunalBagheleIT27/KUNALportfolio",
-    gradient: "linear-gradient(135deg, #C8FF00 0%, #00D9FF 50%, #F97316 100%)",
-    problem: "College hackathons lacked a unified platform for registration, team formation, and project submission.",
-    solution: "Built a full-stack platform that streamlines the entire hackathon lifecycle from registration to judging.",
-    role: "Solo Developer — designed and built the complete platform, onboarding 12 colleges in the first semester.",
-    metrics: [{ label: "Colleges", value: "12" }, { label: "Students", value: "2,400+" }, { label: "Hackathons", value: "8" }, { label: "Submissions", value: "340+" }],
+    codeUrl: "https://github.com/KunalBagheleIT27",
+    gradient: "linear-gradient(135deg, #EA580C 0%, #F59E0B 55%, #1A1A1A 100%)",
+    description:
+      "All-in-one Android app for campus automation, managing store, hostel, and communication between students and faculty.",
+    highlights: [
+      "Led a team of 6 members as project leader across development and testing phases",
+      "Built complete campus ecosystem: store, hostel, student-faculty communication",
+      "Conducted full manual testing ensuring bug-free, seamless UX",
+    ],
+    metrics: [
+      { label: "Year", value: "2024" },
+      { label: "Team Led", value: "6" },
+      { label: "Platform", value: "Android" },
+      { label: "Coverage", value: "Campus Ops" },
+    ],
   },
 ];
 
@@ -96,13 +124,13 @@ const WorkSection = () => {
       <span className="absolute top-8 left-6 md:left-10 font-mono text-[10px] text-muted-foreground/30">{"// 002 WORK"}</span>
 
       <div className="max-w-7xl mx-auto" data-reveal>
-        <div className="flex items-baseline justify-between border-b border-border pb-6 mb-12">
-          <h2 className="font-display font-[800] text-4xl md:text-5xl">SELECTED WORK</h2>
-          <span className="font-mono text-sm text-muted-foreground">( 3 PROJECTS )</span>
+        <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-border pb-6 mb-12">
+          <h2 className="font-display font-[800] text-3xl sm:text-4xl md:text-5xl">SELECTED WORK</h2>
+          <span className="font-mono text-xs sm:text-sm text-muted-foreground">( 3 PROJECTS )</span>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
         {projects.map((p, i) => (
           <ProjectCard key={p.num} project={p} index={i} onOpen={() => openModal(i)} isMobile={isMobile} />
         ))}
@@ -153,7 +181,7 @@ const ProjectCard = ({ project: p, index, onOpen, isMobile }: { project: typeof 
           aspectRatio: "4/5",
           transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
           transition: "transform 0.2s cubic-bezier(0.2,0.8,0.2,1), border-color 0.3s, box-shadow 0.3s",
-          animation: isMobile ? `float-slow ${4 + index}s ease-in-out infinite` : undefined,
+          animation: undefined,
         }}
       >
         {/* Glare overlay */}
@@ -218,27 +246,34 @@ const CaseStudyModal = ({ project: p, onClose }: { project: typeof projects[0]; 
 
   return (
   <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-md overflow-auto" style={{ animation: "clip-reveal 0.4s cubic-bezier(0.2,0.8,0.2,1)" }} onClick={onClose}>
-    <div className="max-w-4xl mx-auto py-20 px-6" onClick={(e) => e.stopPropagation()}>
-      <div className="fixed top-4 left-4 right-4 flex items-center justify-between z-50">
+    <div className="max-w-4xl mx-auto py-20 px-4 sm:px-6" onClick={(e) => e.stopPropagation()}>
+      <div className="fixed top-4 left-4 right-4 flex items-center justify-between z-50 gap-3">
         <button onClick={onClose} data-hover className="font-mono text-xs sm:text-sm text-lime hover:text-foreground transition-colors border border-lime/40 px-3 py-1.5">← BACK</button>
         <button onClick={onClose} data-hover className="font-mono text-xs sm:text-sm text-lime hover:text-foreground transition-colors border border-lime/40 px-3 py-1.5">✕ CLOSE</button>
       </div>
 
       <span className="font-mono text-lime text-sm">{p.num}</span>
-      <h2 className="font-display font-[800] text-4xl sm:text-5xl md:text-6xl mt-2 mb-2">{p.name}</h2>
-      <p className="text-muted-foreground mb-10 text-lg">{p.tagline}</p>
+      <h2 className="font-display font-[800] text-3xl sm:text-5xl md:text-6xl mt-2 mb-2">{p.name}</h2>
+      <p className="text-muted-foreground mb-10 text-base sm:text-lg">{p.tagline}</p>
+      {p.year ? <p className="font-mono text-xs text-muted-foreground -mt-8 mb-8">Year: {p.year}</p> : null}
 
       <div className="space-y-10">
-        {[
-          { label: "Problem", content: p.problem },
-          { label: "Solution", content: p.solution },
-          { label: "My Role", content: p.role },
-        ].map((s) => (
-          <div key={s.label} className="border-l-2 border-lime/30 pl-6">
-            <h3 className="font-mono text-xs text-lime uppercase tracking-widest mb-2">{s.label}</h3>
-            <p className="text-foreground/80 text-lg">{s.content}</p>
-          </div>
-        ))}
+        <div className="border-l-2 border-lime/30 pl-6">
+          <h3 className="font-mono text-xs text-lime uppercase tracking-widest mb-2">Overview</h3>
+          <p className="text-foreground/80 text-base sm:text-lg">{p.description}</p>
+        </div>
+
+        <div>
+          <h3 className="font-mono text-xs text-muted-foreground uppercase tracking-widest mb-4">Highlights</h3>
+          <ul className="space-y-3">
+            {p.highlights.map((item) => (
+              <li key={item} className="flex gap-3 text-foreground/85 text-sm sm:text-base">
+                <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-lime shrink-0" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         <div>
           <h3 className="font-mono text-xs text-muted-foreground uppercase tracking-widest mb-4">Key Metrics</h3>

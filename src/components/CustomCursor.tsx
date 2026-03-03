@@ -8,6 +8,9 @@ const CustomCursor = () => {
   const isHovering = useRef(false);
 
   useEffect(() => {
+    const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+    if (!hasFinePointer) return;
+
     const onMove = (e: MouseEvent) => {
       mouse.current = { x: e.clientX, y: e.clientY };
       if (dotRef.current) {
@@ -48,8 +51,8 @@ const CustomCursor = () => {
 
   return (
     <>
-      <div ref={dotRef} className="fixed top-0 left-0 w-2 h-2 rounded-full bg-lime z-[10000] pointer-events-none" style={{ willChange: "transform" }} />
-      <div ref={circleRef} className="fixed top-0 left-0 w-8 h-8 rounded-full border border-lime z-[10000] pointer-events-none transition-[width,height,background-color] duration-200" style={{ willChange: "transform" }} />
+      <div ref={dotRef} className="fixed top-0 left-0 w-2 h-2 rounded-full bg-lime z-[11010] pointer-events-none" style={{ willChange: "transform" }} />
+      <div ref={circleRef} className="fixed top-0 left-0 w-8 h-8 rounded-full border border-lime z-[11010] pointer-events-none transition-[width,height,background-color] duration-200" style={{ willChange: "transform" }} />
     </>
   );
 };

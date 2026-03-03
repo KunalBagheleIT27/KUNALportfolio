@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-const sections = ["home", "work", "about", "skills", "contact"];
+const sections = ["home", "work", "about", "skills", "awards", "contact"];
 
 const Navbar = () => {
   const [active, setActive] = useState("home");
@@ -31,18 +31,10 @@ const Navbar = () => {
   };
 
   const mobileMenu = menuOpen ? (
-    <div className="fixed inset-x-0 top-14 bottom-0 bg-background z-[10002] md:hidden overflow-y-auto border-t border-border">
-      <div className="min-h-full flex flex-col px-6 py-6">
+    <div className="fixed inset-x-0 top-14 bottom-0 bg-background z-[10002] md:hidden overflow-y-auto border-t border-border animate-in fade-in slide-in-from-top-2 duration-200">
+      <div className="min-h-full flex flex-col px-5 sm:px-6 py-6">
         <div className="flex items-center justify-between mb-8">
           <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">Menu</span>
-          <button
-            onClick={() => setMenuOpen(false)}
-            className="font-mono text-xs uppercase tracking-wider text-lime border border-lime/40 px-3 py-1.5"
-            aria-label="Close menu"
-            data-hover
-          >
-            Close ✕
-          </button>
         </div>
 
         <div className="flex flex-col gap-6">
@@ -50,7 +42,7 @@ const Navbar = () => {
             <button
               key={s}
               onClick={() => scrollTo(s)}
-              className="text-left font-display text-3xl sm:text-4xl font-bold text-foreground hover:text-lime transition-colors"
+              className="text-left font-display text-2xl sm:text-4xl font-bold text-foreground hover:text-lime transition-colors"
               data-hover
             >
               {s.toUpperCase()}
@@ -77,7 +69,7 @@ const Navbar = () => {
 
   return (
     <>
-    <nav className="fixed top-0 left-0 w-full h-14 z-[10001] border-b border-border bg-background/85 backdrop-blur-xl flex items-center px-6 md:px-10" role="navigation" aria-label="Main navigation">
+    <nav className="fixed top-0 left-0 w-full h-14 z-[10001] border-b border-border bg-background/85 backdrop-blur-xl flex items-center px-4 sm:px-6 md:px-10" role="navigation" aria-label="Main navigation">
       {/* Logo */}
       <button onClick={() => scrollTo("home")} className="w-8 h-8 border border-lime flex items-center justify-center font-display font-bold text-lime text-xs" aria-label="Go to top" data-hover>
         KB
@@ -108,7 +100,7 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Hamburger */}
-      <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden ml-auto flex flex-col gap-1.5 w-6" aria-label="Toggle menu" data-hover>
+      <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden ml-auto flex flex-col gap-1.5 w-6" aria-label="Toggle menu" aria-expanded={menuOpen} data-hover>
         <span className={`h-[1.5px] w-full bg-foreground transition-all duration-300 ${menuOpen ? "rotate-45 translate-y-[4.5px]" : ""}`} />
         <span className={`h-[1.5px] w-full bg-foreground transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`} />
         <span className={`h-[1.5px] w-full bg-foreground transition-all duration-300 ${menuOpen ? "-rotate-45 -translate-y-[4.5px]" : ""}`} />

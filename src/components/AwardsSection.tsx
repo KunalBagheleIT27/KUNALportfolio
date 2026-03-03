@@ -45,12 +45,12 @@ const AwardCard = ({ a }: { a: typeof awards[0] }) => {
       onTouchEnd={() => setTilt({ x: 0, y: 0 })}
       data-hover
       data-reveal
-      className="group border border-border bg-card/50 backdrop-blur-sm p-8 hover:border-lime/50 transition-all duration-300 hover:shadow-[0_20px_50px_-15px_rgba(200,255,0,0.1)]"
+      className="group border border-border bg-card/50 backdrop-blur-sm p-6 sm:p-8 hover:border-lime/50 transition-all duration-300 hover:shadow-[0_20px_50px_-15px_rgba(200,255,0,0.1)]"
       style={{
         perspective: "600px",
         transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
         transition: "transform 0.15s ease-out, border-color 0.3s, box-shadow 0.3s",
-        animation: isMobile ? "float-slow 5s ease-in-out infinite" : undefined,
+        animation: undefined,
       }}
     >
       <div className="relative">
@@ -69,7 +69,7 @@ const AwardsSection = () => {
   const ref = useScrollReveal<HTMLElement>();
 
   return (
-    <section ref={ref} className="relative py-20 md:py-32">
+    <section id="awards" ref={ref} className="relative py-20 md:py-32">
       <span className="absolute top-8 left-6 md:left-10 font-mono text-[10px] text-muted-foreground/30">{"// 005 AWARDS"}</span>
 
       {/* Marquee with depth */}
@@ -84,7 +84,7 @@ const AwardsSection = () => {
       </div>
 
       {/* Award cards */}
-      <div className="max-w-7xl mx-auto px-6 md:px-10 grid grid-cols-1 md:grid-cols-3 gap-6" data-reveal>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6" data-reveal>
         {awards.map((a) => (
           <AwardCard key={a.name} a={a} />
         ))}

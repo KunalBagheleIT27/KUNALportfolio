@@ -1,5 +1,5 @@
 import { useScrollReveal } from "@/hooks/useScrollReveal";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const socials = [
@@ -13,6 +13,23 @@ const ContactSection = () => {
   const isMobile = useIsMobile();
   const ref = useScrollReveal<HTMLElement>();
   const [hoveredSocial, setHoveredSocial] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const subject = encodeURIComponent(formData.subject || `New inquiry from ${formData.name}`);
+    const body = encodeURIComponent(
+      `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`,
+    );
+
+    window.location.href = `mailto:hello@kunalbaghele.dev?subject=${subject}&body=${body}`;
+  };
 
   return (
     <section id="contact" ref={ref} className="relative py-20 md:py-32 px-4 sm:px-6 md:px-10 overflow-hidden">
@@ -25,7 +42,7 @@ const ContactSection = () => {
       <div className="max-w-6xl mx-auto relative">
         {/* Giant headline with 3D perspective */}
         <div data-reveal className="mb-16" style={{ perspective: "1000px" }}>
-          <h2 className="font-display font-[800] text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight">
+          <h2 className="font-display font-[800] text-3xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight">
             <span className="block" style={{ animation: "clip-reveal 0.6s cubic-bezier(0.2,0.8,0.2,1) 0.1s both" }}>
               LET'S BUILD
             </span>
@@ -73,8 +90,79 @@ const ContactSection = () => {
           </div>
         </div>
 
+        <div className="border border-border bg-card/40 backdrop-blur-sm p-5 sm:p-7 mb-10" data-reveal>
+          <div className="mb-5">
+            <h3 className="font-display font-bold text-2xl sm:text-3xl">Contact Form</h3>
+            <p className="text-muted-foreground text-sm sm:text-base mt-1">Fill this form and your email client will open with prefilled details.</p>
+          </div>
+
+          <form onSubmit={onSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="name" className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">Name</label>
+              <input
+                id="name"
+                type="text"
+                required
+                value={formData.name}
+                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                className="h-11 border border-border bg-background/70 px-3 text-sm text-foreground outline-none focus:border-lime/60"
+                placeholder="Your name"
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="email" className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">Email</label>
+              <input
+                id="email"
+                type="email"
+                required
+                value={formData.email}
+                onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+                className="h-11 border border-border bg-background/70 px-3 text-sm text-foreground outline-none focus:border-lime/60"
+                placeholder="you@example.com"
+              />
+            </div>
+
+            <div className="flex flex-col gap-2 sm:col-span-2">
+              <label htmlFor="subject" className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">Subject</label>
+              <input
+                id="subject"
+                type="text"
+                required
+                value={formData.subject}
+                onChange={(e) => setFormData((prev) => ({ ...prev, subject: e.target.value }))}
+                className="h-11 border border-border bg-background/70 px-3 text-sm text-foreground outline-none focus:border-lime/60"
+                placeholder="Project inquiry"
+              />
+            </div>
+
+            <div className="flex flex-col gap-2 sm:col-span-2">
+              <label htmlFor="message" className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">Message</label>
+              <textarea
+                id="message"
+                required
+                rows={5}
+                value={formData.message}
+                onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
+                className="border border-border bg-background/70 px-3 py-2 text-sm text-foreground outline-none focus:border-lime/60 resize-y"
+                placeholder="Tell me about your project"
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <button
+                type="submit"
+                data-hover
+                className="w-full sm:w-auto border border-lime px-6 py-3 font-mono text-xs uppercase tracking-wider text-lime hover:bg-lime hover:text-background transition-colors duration-300"
+              >
+                Send Message ↗
+              </button>
+            </div>
+          </form>
+        </div>
+
         {/* Socials row */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8" data-reveal>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" data-reveal>
           {socials.map((s) => (
             <a key={s.name} href={s.href} data-hover aria-label={s.name}
               target="_blank"
@@ -88,7 +176,7 @@ const ContactSection = () => {
               <svg viewBox="0 0 24 24" className={`w-5 h-5 transition-colors relative z-10 ${hoveredSocial === s.name || isMobile ? "fill-background" : "fill-foreground group-hover:fill-background"}`}>{s.icon}</svg>
               <span className={`font-mono text-xs transition-colors relative z-10 ${hoveredSocial === s.name || isMobile ? "text-background" : "text-foreground group-hover:text-background"}`}>{s.name}</span>
               {/* 3D shine on hover */}
-              <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-foreground/5 to-transparent transition-transform duration-700 ${isMobile ? "translate-x-full" : "-translate-x-full group-hover:translate-x-full"}`} />
+              <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-foreground/5 to-transparent transition-transform duration-700 ${isMobile ? "-translate-x-full" : "-translate-x-full group-hover:translate-x-full"}`} />
             </a>
           ))}
         </div>
